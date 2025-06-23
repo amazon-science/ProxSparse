@@ -1,0 +1,17 @@
+This docs mainly describe how to integrate ProxSparse operator into the training framework.
+
+In this repo, we use the ``trl``, ``transformers`` and ``accelerate`` as the main trianing framework.
+
+The prox_op.py contains the core ProxSparse operation on how to solve the proximal operator.
+
+For the "2:4 semi-structured" proximal operator. In the proximal gradient descent, the solving process happens after the gradient descent step. 
+
+The "frozen weight" operator is differentiable, and can be implemented in the loss computation process. 
+
+The main function concerned in the training procedure is the weight update step and the loss computation step.
+
+We monkey patched the ``trl`` SFTTrainer class with modified function added with the prox_op. 
+
+The modification of the function happens in line 629 and line 777 in patch_transformers_trainer.py, where we added our ProxSparse operator. We didn't modify the rest of the code in the ``trl`` and they remain as the same in the original ``SFTTrainer`` class.
+
+To accomodate to your own training framework, you can add the two proxsparse operator accordingly after the gradient descent and loss computation step.

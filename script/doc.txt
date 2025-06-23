@@ -1,0 +1,23 @@
+This is the documentation of how to run the ProxSparse Script to explore the semi-structured (2:4) mask
+
+The description of the parameter can be found in the entry point ``end-to-end/main.py``. 
+
+The *_prox.sh will launch training with only the $\lambda_{1}$ (semi-structured regularizer).
+
+The *_full.sh will launch training with both the $\lambda_{1}$ (semi-structured regularizer) and $\lambda_{2}$ (frozen weight regularizer).
+
+The parameter explanation can be found in readme and end_to_end/main.py
+
+Under those scripts:
+
+First, we will "python end-to-end/main.py", this will start learning with ProxSparse with hundreds of calibration data.
+
+The results of python end-to-end/main.py is the creation of checkpoint that shrinks the parameters towards 2:4 sparsity. 
+
+Note that ProxSparse does not involve additional weight updates once the mask is determined.
+
+The second phase will run "python end-to-end/mask_op.py", which extract the masks from the learned checkpoint, aligninh with the mask selection goal during learning.
+
+After that, you will acquire the mask (with file named starting with "proximal_").
+
+The third step "python eval/eval_mask_ppl.py" will apply the mask to the model, and evaluate the corresponding C4 perplexity. 
